@@ -128,12 +128,27 @@ const Gameboard = length => {
 
     const getMissedShots = () => _missedShots;
 
+    const allShipsSunk = () => {  
+        if (_ships.length === 0) {
+            throw new Error("No ships on the board");
+        }
+        
+        for (let ship of _ships) {
+            if (ship.isSunk() === false) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     return {
         getLength,
         placeShip,
         getShips,
         receiveAttack,
         getMissedShots,
+        allShipsSunk,
     };
 };
 
