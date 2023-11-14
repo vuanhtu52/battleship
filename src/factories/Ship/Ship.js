@@ -70,9 +70,14 @@ const Ship = length => {
         }
 
         // Check if the distance between start and end points match ship's length
-        const distance_square = (startPoint[0] - endPoint[0])*(startPoint[0] - endPoint[0]) + (startPoint[1] - endPoint[1])*(startPoint[1] - endPoint[1]);
-        if (distance_square !== _length*_length) {
-            throw new Error("setPosition: Position does not match ship's length");
+        if (startPoint[0] === endPoint[0]) {
+            if (endPoint[1] - startPoint[1] + 1 !== _length) {
+                throw new Error("setPosition: Position does not match ship's length");
+            }
+        } else if (startPoint[1] === endPoint[1]) {
+            if (endPoint[0] - startPoint[0] + 1 !== _length) {
+                throw new Error("setPosition: Position does not match ship's length");
+            }
         }
 
         // Check if the coordinates form a horizontal or vertical line

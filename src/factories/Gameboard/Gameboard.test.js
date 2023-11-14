@@ -39,9 +39,9 @@ test("Test placeShip function: Check if direction is either horizontal or vertic
 
 test("Test placeShip function: Check if the coordinates are within the board length", () => {
     const board = Gameboard(5);
-    expect(() => board.placeShip(6, 1, 3, "horizontal")).toThrow("placeShip: Coordinates are not within the board");
-    expect(() => board.placeShip(1, 6, 3, "horizontal")).toThrow("placeShip: Coordinates are not within the board");
-    expect(() => board.placeShip(5, 5, 3, "horizontal")).not.toThrow("placeShip: Coordinates are not within the board");
+    expect(() => board.placeShip(5, 1, 3, "horizontal")).toThrow("placeShip: Coordinates are not within the board");
+    expect(() => board.placeShip(1, 5, 3, "horizontal")).toThrow("placeShip: Coordinates are not within the board");
+    expect(() => board.placeShip(4, 4, 3, "horizontal")).not.toThrow("placeShip: Coordinates are not within the board");
     expect(() => board.placeShip(0, 0, 3, "vertical")).not.toThrow("placeShip: Coordinates are not within the board");
 });
 
@@ -57,7 +57,7 @@ test("Test placeShip function: Check if the ship's end-point is outside the boar
     expect(() => board.placeShip(1, 1, 4, "vertical")).not.toThrow("placeShip: Ship's end-point exceeds the board's area");
 });
 
-test.only("Test placeShip function: Check if the ship's position overlaps with other ships", () => {
+test("Test placeShip function: Check if the ship's position overlaps with other ships", () => {
     const board = Gameboard(5);
     board.placeShip(0, 0, 4, "horizontal");
 

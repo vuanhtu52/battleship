@@ -41,18 +41,18 @@ const Gameboard = length => {
         }
 
         // x and y must be within board's length
-        if (x > _length || y > _length) {
+        if (x >= _length || y >= _length) {
             throw new Error("placeShip: Coordinates are not within the board");
         }
 
         if (direction === "horizontal") {
-            endPoint[0] += shipLength;
+            endPoint[0] += shipLength - 1;
         } else if (direction === "vertical") {
-            endPoint[1] += shipLength;
+            endPoint[1] += shipLength - 1;
         }
 
         // Check if the ship's end-point exceeds the board's area
-        if (endPoint[0] > _length || endPoint[1] > _length) {
+        if (endPoint[0] >= _length || endPoint[1] >= _length) {
             throw new Error("placeShip: Ship's end-point exceeds the board's area")
         }
 
