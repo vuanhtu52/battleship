@@ -4,6 +4,7 @@ const Gameboard = length => {
     let _length = length;
     let _ships = []; // Store the ships on the gameboard
     let _missedShots = [];
+    let _attackedPoints = [];
 
     const getLength = () => {
         if (Number.isInteger(_length) === false) {
@@ -124,13 +125,16 @@ const Gameboard = length => {
         if (isHit === false) {
             _missedShots.push([x, y]);
         }
+
+        // Record the attack
+        _attackedPoints.push([x, y]);
     };
 
     const getMissedShots = () => _missedShots;
 
     const allShipsSunk = () => {  
         if (_ships.length === 0) {
-            throw new Error("No ships on the board");
+            throw new Error("allShipsSunk: No ships on the board");
         }
         
         for (let ship of _ships) {
@@ -142,6 +146,8 @@ const Gameboard = length => {
         return true;
     };
 
+    const getAttackedPoints = () => _attackedPoints;
+
     return {
         getLength,
         placeShip,
@@ -149,6 +155,7 @@ const Gameboard = length => {
         receiveAttack,
         getMissedShots,
         allShipsSunk,
+        getAttackedPoints,
     };
 };
 

@@ -122,7 +122,7 @@ test("Test receiveAttack function: Check if the function records the correct mis
 test("Test allShipsSunk function", () => {
     const board = Gameboard(5);
 
-    expect(() => board.allShipsSunk()).toThrow("No ships on the board");
+    expect(() => board.allShipsSunk()).toThrow("allShipsSunk: No ships on the board");
 
     board.placeShip(0, 0, 2, "horizontal");
     board.placeShip(1, 1, 3, "vertical");
@@ -142,4 +142,14 @@ test("Test allShipsSunk function", () => {
     expect(board.allShipsSunk()).toBe(true);
     board.receiveAttack(1, 4);
     expect(board.allShipsSunk()).toBe(true);
+});
+
+test("Test getAttackPoints function", () => {
+    const board = Gameboard(5);
+    board.receiveAttack(0, 1);
+    expect(board.getAttackedPoints()).toStrictEqual([[0, 1]]);
+    board.receiveAttack(1, 2);
+    expect(board.getAttackedPoints()).toStrictEqual([[0, 1], [1, 2]]);
+    board.receiveAttack(4, 4);
+    expect(board.getAttackedPoints()).toStrictEqual([[0, 1], [1, 2], [4, 4]]);
 });
