@@ -65,3 +65,56 @@ test("Test placeShip function: Check if the ship's position overlaps with other 
     expect(() => board.placeShip(0, 5, 2, "horizontal")).not.toThrow("placeShip: Ship overlaps with others");
     expect(() => board.placeShip(1, 1, 2, "vertical")).not.toThrow("placeShip: Ship overlaps with others");
 });
+
+test("Test getShips function", () => {
+    const board = Gameboard(5);
+    expect(board.getShips().length).toBe(0);
+
+    board.placeShip(0, 0, 4, "horizontal");
+    expect(board.getShips().length).toBe(1);
+
+    board.placeShip(1, 1, 2, "vertical");
+    expect(board.getShips().length).toBe(2);
+});
+
+test("Test receiveAttack function: Check if the parameters are integers and within the board", () => {
+    const board = Gameboard(5);
+
+    expect(() => board.receiveAttack("0", 0)).toThrow("receiveAttack: Coordinates must be integers");
+    expect(() => board.receiveAttack(1, "1")).toThrow("receiveAttack: Coordinates must be integers");
+    expect(() => board.receiveAttack(-1, 0)).toThrow("receiveAttack: Coordinates must be inside board");
+    expect(() => board.receiveAttack(4, 5)).toThrow("receiveAttack: Coordinates must be inside board");
+    expect(() => board.receiveAttack(5, 4)).toThrow("receiveAttack: Coordinates must be inside board");
+    expect(() => board.receiveAttack(0, 0)).not.toThrow("receiveAttack: Coordinates must be inside board");
+    expect(() => board.receiveAttack(4, 4)).not.toThrow("receiveAttack: Coordinates must be inside board");
+});
+
+test("Test receiveAttack function: Check if the function detects when a ship is hit", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 4, "horizontal");
+    board.placeShip(4, 1, 2, "vertical");
+    board.receiveAttack(0, 0);
+    board.receiveAttack(3, 0);
+    board.receiveAttack(4, 0);
+    board.receiveAttack(4, 1);
+    board.receiveAttack(4, 4);
+
+    expect(board.getShips()[0].getHitCount()).toBe(2);
+    expect(board.getShips()[1].getHitCount()).toBe(1);
+});
+
+test("Test receiveAttack function: Check if the function records the correct missed shots", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 4, "horizontal");
+    board.placeShip(4, 1, 2, "vertical");
+
+    expect(board.getMissedShots()).toStrictEqual([]);
+
+    board.receiveAttack(0, 0);
+    board.receiveAttack(3, 0);
+    board.receiveAttack(4, 0);
+    board.receiveAttack(4, 1);
+    board.receiveAttack(4, 4);
+    
+    expect(board.getMissedShots()).toStrictEqual([[4, 0], [4, 4]]);
+});

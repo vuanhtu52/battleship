@@ -3,6 +3,7 @@ import Ship from "../Ship/Ship";
 const Gameboard = length => {
     let _length = length;
     let _ships = []; // Store the ships on the gameboard
+    let _missedShots = [];
 
     const getLength = () => {
         if (Number.isInteger(_length) === false) {
@@ -82,6 +83,8 @@ const Gameboard = length => {
         _ships.push(ship);
     };
 
+    const getShips = () => _ships;
+
     // Get all the points occupied by the current ships
     const _getOccupiedPoints = () => {
         let points = []
@@ -93,9 +96,44 @@ const Gameboard = length => {
         return points;
     };
 
+    const receiveAttack = (x, y) => {
+        let isHit = false;
+
+        // Check if the coordinates are integers
+        if (Number.isInteger(x) === false || Number.isInteger(y) === false) {
+            throw new Error("receiveAttack: Coordinates must be integers");
+        }
+
+        // Check if the coordinates are inside the board
+        if (x < 0 || x >= _length || y < 0 || y >= _length) {
+            throw new Error("receiveAttack: Coordinates must be inside board");
+        }
+
+        // Check if the shot hits a ship
+        _ships.forEach(ship => {
+            for (let point of ship.getPoints()) {
+                if (x === point[0] && y === point[1]) {
+                    ship.hit();
+                    isHit = true;
+                    break;
+                }
+            }
+        });
+
+        // Record the missed shot
+        if (isHit === false) {
+            _missedShots.push([x, y]);
+        }
+    };
+
+    const getMissedShots = () => _missedShots;
+
     return {
         getLength,
         placeShip,
+        getShips,
+        receiveAttack,
+        getMissedShots,
     };
 };
 
