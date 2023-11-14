@@ -1,3 +1,5 @@
+import getRandomInteger from "../../utils/getRandomInteger/getRandomInteger";
+
 const Player = () => {
     const attack = (x, y, enemyBoard) => {
         // Check if x and y are integers
@@ -20,8 +22,23 @@ const Player = () => {
         enemyBoard.receiveAttack(x, y);
     };
 
+    const attackRandom = enemyBoard => {
+        // Check if out of moves
+        const availablePoints = enemyBoard.getAvailablePoints();
+        if (availablePoints.length === 0) {
+            throw new Error("attackRandom: Out of moves");
+        }
+
+        // Get random point
+        const randomIndex = getRandomInteger(0, availablePoints.length - 1);
+        const attackPoint = availablePoints[randomIndex];
+
+        enemyBoard.receiveAttack(attackPoint[0], attackPoint[1]);
+    };
+
     return {
         attack,
+        attackRandom,
     };
 };
 

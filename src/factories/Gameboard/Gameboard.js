@@ -110,6 +110,13 @@ const Gameboard = length => {
             throw new Error("receiveAttack: Coordinates must be inside board");
         }
 
+        // Check if the spot as already been attacked
+        for (let point of getAttackedPoints()) {
+            if (x === point[0] && y === point[1]) {
+                throw new Error("receiveAttack: Cannot attack the same spot twice");
+            }
+        }
+
         // Check if the shot hits a ship
         _ships.forEach(ship => {
             for (let point of ship.getPoints()) {
@@ -148,6 +155,36 @@ const Gameboard = length => {
 
     const getAttackedPoints = () => _attackedPoints;
 
+    const _isPointAvailable = point => {
+        for (let attackedPoint of _attackedPoints) {
+            if (point[0] === attackedPoint[0] && point[1] === attackedPoint[1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const getAvailablePoints = () => {
+        let allPoints = [];
+        let availablePoints = [];
+
+        // Get all the points on the board
+        for (let x = 0; x < _length; x++) {
+            for (let y = 0; y < _length; y++) {
+                allPoints.push([x, y]);
+            }
+        } 
+
+        // Get the available points
+        for (let point of allPoints) {
+            if (_isPointAvailable(point) === true) {
+                availablePoints.push(point);
+            }
+        }
+
+        return availablePoints;
+    }
+
     return {
         getLength,
         placeShip,
@@ -156,6 +193,7 @@ const Gameboard = length => {
         getMissedShots,
         allShipsSunk,
         getAttackedPoints,
+        getAvailablePoints,
     };
 };
 

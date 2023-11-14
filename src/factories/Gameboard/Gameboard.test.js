@@ -119,6 +119,14 @@ test("Test receiveAttack function: Check if the function records the correct mis
     expect(board.getMissedShots()).toStrictEqual([[4, 0], [4, 4]]);
 });
 
+test("Test receiveAttack function: The board cannot receive the same attack twice", () => {
+    const board = Gameboard(5);
+    board.receiveAttack(0, 0);
+
+    expect(() => board.receiveAttack(0, 0)).toThrow("receiveAttack: Cannot attack the same spot twice");
+    expect(() => board.receiveAttack(0, 1)).not.toThrow("receiveAttack: Cannot attack the same spot twice");
+});
+
 test("Test allShipsSunk function", () => {
     const board = Gameboard(5);
 
@@ -152,4 +160,14 @@ test("Test getAttackPoints function", () => {
     expect(board.getAttackedPoints()).toStrictEqual([[0, 1], [1, 2]]);
     board.receiveAttack(4, 4);
     expect(board.getAttackedPoints()).toStrictEqual([[0, 1], [1, 2], [4, 4]]);
+});
+
+test("Test getAvailablePoints function", () => {
+    const board = Gameboard(3);
+
+    board.receiveAttack(2, 2);
+    expect(board.getAvailablePoints()).toStrictEqual([[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1]]);
+
+    board.receiveAttack(0, 1);
+    expect(board.getAvailablePoints()).toStrictEqual([[0, 0], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1]]);
 });
