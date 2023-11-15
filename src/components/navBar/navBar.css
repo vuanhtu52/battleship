@@ -1,0 +1,12 @@
+.nav-bar {
+    background-color: #e7e5e4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.nav-bar .header {
+    font-size: 30px;
+    font-weight: 900;
+}
