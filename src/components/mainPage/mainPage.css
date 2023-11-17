@@ -1,0 +1,88 @@
+.main-page {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    gap: 20px;
+}
+
+.main-page .game-section {
+    width: 100%;
+    display: grid;
+    grid-template-rows: max-content;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    justify-content: center;
+    align-items: center;
+    row-gap: 50px;
+}
+
+.main-page .player-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.main-page .player-section:first-child {
+    border-right: 1px solid #EEEFF0;
+}
+
+.main-page .player-section:nth-child(2) {
+    border-left: 1px solid #EEEFF0;
+}
+
+.main-page .player-section .header {
+    width: 60%;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.main-page .player-section:first-child .header {
+    background-color: #E7091E;
+}
+
+.main-page .player-section:nth-child(2) .header {
+    background-color: #3F4454;
+}
+
+.main-page .player-section .board {
+    width: 60%;
+}
+
+.main-page .player-section .ship-yard {
+    width: 60%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 20px);
+    justify-items: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.main-page .player-section .ship-yard .ship .cell {
+    width: 17px;
+}
+
+.main-page .new-game-button {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    cursor: pointer;
+    background-color: #EEEFF0;
+}
+
+.main-page .new-game-button:active {
+    transform: translateY(4px);
+}
+
+

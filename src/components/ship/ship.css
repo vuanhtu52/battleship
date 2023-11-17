@@ -1,0 +1,9 @@
+.ship {
+    display: flex;
+    gap: 3px;
+}
+
+.ship .cell {
+    border-radius: 3px;
+    aspect-ratio: 1/1;
+}
