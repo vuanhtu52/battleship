@@ -1,6 +1,8 @@
 import getRandomInteger from "../../utils/getRandomInteger/getRandomInteger";
 
 const Player = () => {
+    let _active = false; // Keep track of the player's turn
+
     const attack = (x, y, enemyBoard) => {
         // Check if x and y are integers
         if (Number.isInteger(x) === false || Number.isInteger(y) === false) {
@@ -34,11 +36,26 @@ const Player = () => {
         const attackPoint = availablePoints[randomIndex];
 
         enemyBoard.receiveAttack(attackPoint[0], attackPoint[1]);
+
+        return attackPoint;
+    };
+
+    const getActive = () => _active;
+
+    const setActive = val => {
+        // Check if val is boolean
+        if (typeof val !== "boolean") {
+            throw new Error("Argument must be a boolean value");
+        }
+
+        _active = val;
     };
 
     return {
         attack,
         attackRandom,
+        getActive,
+        setActive,
     };
 };
 

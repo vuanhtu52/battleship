@@ -30,7 +30,23 @@ test("Test attackRandom function: Should not throw any error", () => {
     player.attack(0, 1, enemyBoard);
     player.attack(1, 0, enemyBoard);
 
-    expect(player.attackRandom(enemyBoard)).toBe(undefined);
+    expect(() => player.attackRandom(enemyBoard)).not.toThrow("attackRandom: OUt of moves");
     expect(() => player.attackRandom(enemyBoard)).toThrow("attackRandom: Out of moves");
+});
+
+test("Test getActive function", () => {
+    const player = Player();
+    expect(typeof(player.getActive())).toBe("boolean");
+});
+
+test("Test setActive function", () => {
+    const player = Player();
+    expect(() => player.setActive(1)).toThrow("Argument must be a boolean value");
+    
+    player.setActive(true);
+    expect(player.getActive()).toBe(true);
+
+    player.setActive(false);
+    expect(player.getActive()).toBe(false);
 });
 

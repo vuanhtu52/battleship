@@ -162,7 +162,7 @@ const Gameboard = length => {
             }
         }
         return true;
-    }
+    };
 
     const getAvailablePoints = () => {
         let allPoints = [];
@@ -183,7 +183,7 @@ const Gameboard = length => {
         }
 
         return availablePoints;
-    }
+    };
 
     return {
         getLength,

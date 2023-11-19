@@ -1,5 +1,6 @@
 import "./style.css";
-import AppController from "./controllers/AppController";
+import GameController from "./controllers/GameController";
+import ScreenController from "./controllers/ScreenController";
 
-const appController = AppController();
-appController.init(); 
+const screenController = ScreenController();
+screenController.init();
