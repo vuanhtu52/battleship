@@ -23,6 +23,11 @@ const createMainPage = () => {
 
     page.appendChild(gameSection);
 
+    // Add winner message
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message";
+    page.appendChild(messageDiv);
+
     // Add new game button
     const newGameButton = document.createElement("button");
     newGameButton.className = "new-game-button";

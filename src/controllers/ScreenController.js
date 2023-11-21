@@ -14,12 +14,12 @@ const ScreenController = () => {
         document.body.appendChild(createNavBar());
 
         // Add page wrapper
-        const pageWraper = document.createElement("div");
-        pageWraper.className = "page-wrapper";
-        document.body.appendChild(pageWraper);
+        const pageWrapper = document.createElement("div");
+        pageWrapper.className = "page-wrapper";
+        document.body.appendChild(pageWrapper);
 
         // Load main page
-        _loadPage(pageWraper, "main");
+        _loadPage(pageWrapper, "main");
     };
 
     const _loadPage = (pageWrapper, pageId) => {
@@ -35,7 +35,7 @@ const ScreenController = () => {
     };
 
     const _loadMainPage = pageWrapper => {
-        pageWrapper.appendChild(createMainPage());
+        pageWrapper.appendChild(createMainPage());     
 
         // Render the game boards
         _renderBoard(document.querySelector(".main-page .player-section:first-child .board"), gameController.getGameboard1(), "#38BDF8", false);
@@ -50,11 +50,17 @@ const ScreenController = () => {
                 // Play the attack and display it on the board
                 gameController.getPlayer1().attack(cell.x, cell.y, gameController.getGameboard2());
                 _updateCell(cell, gameController.getGameboard2(), true, "#A19DB0");
+                if (gameController.findWinner() !== "none") {
+                    _endGame();
+                }
 
                 // Computer's turn to attack
                 const attackPoint = gameController.getPlayer2().attackRandom(gameController.getGameboard1());
                 const cellIndex = attackPoint[0] + 1 + gameController.getGameboard1().getLength()*attackPoint[1];
                 _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex})`), gameController.getGameboard1(), false, "#38BDF8");
+                if (gameController.findWinner() !== "none") {
+                    _endGame();
+                }
             });
         });
     };
@@ -111,8 +117,25 @@ const ScreenController = () => {
                 break;
             }
         }
-
     };
+
+    const _endGame = () => {
+        // Find the winner
+        const winner = gameController.findWinner();
+
+        // Disable 2 game boards
+        document.querySelectorAll(".main-page .player-section .board").forEach(board => {
+            board.style.pointerEvents = "none";
+        });
+
+        // Display the winner
+        const messageDiv = document.querySelector(".main-page .message");
+        if (winner === "1") {
+            messageDiv.textContent = "Winner: Player 1";
+        } else {
+            messageDiv.textContent = "Winner: Player 2";
+        }
+    }
 
     return {
         init,

@@ -42,6 +42,21 @@ const GameController = () => {
         _player1.setActive(!_player1.getActive());
         _player2.setActive(!_player2.getActive());
     };
+
+    // Either return "1", "2", or "none"
+    const findWinner = () => {
+        // Check if player 1's ships are all sunk
+        if (_gameboard1.allShipsSunk() === true) {
+            return "2";
+        }
+
+        // Check if player 2's ships are all sunk
+        if (_gameboard2.allShipsSunk() === true) {
+            return "1";
+        }
+
+        return "none";
+    };
     
     return {
         startNewGame,
@@ -50,6 +65,7 @@ const GameController = () => {
         getGameboard1,
         getGameboard2,
         switchPlayer,
+        findWinner,
     };
 };
 
