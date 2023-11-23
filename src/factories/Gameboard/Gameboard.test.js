@@ -171,3 +171,84 @@ test("Test getAvailablePoints function", () => {
     board.receiveAttack(0, 1);
     expect(board.getAvailablePoints()).toStrictEqual([[0, 0], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1]]);
 });
+
+test("Test getPointsAroundShip function: Params must be non-negative integers", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(() => board.getPointsAroundShip(-1, 0)).toThrow("getPointsAroundShip: Arguments must be non-negative integers");
+    expect(() => board.getPointsAroundShip("0", 0)).toThrow("getPointsAroundShip: Arguments must be non-negative integers");
+});
+
+test("Test getPointsAroundShip function: Coordinates must be inside board and is occupied by a ship", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(() => board.getPointsAroundShip(5, 0)).toThrow("getPointsAroundShip: Point outside board");
+    expect(() => board.getPointsAroundShip(1, 1)).toThrow("getPointsAroundShip: No ship at this point");
+});
+
+test("Test getPointsAroundShip function: Ship at top left corner", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(board.getPointsAroundShip(0, 0)).toStrictEqual([[2, 0], [0, 1], [1, 1], [2, 1]]);
+    expect(board.getPointsAroundShip(1, 0)).toStrictEqual([[2, 0], [0, 1], [1, 1], [2, 1]]);
+});
+
+test("Test getPointsAroundShip function: Ship at top right corner", () => {
+    const board = Gameboard(5);
+    board.placeShip(3, 0, 2, "horizontal");
+
+    expect(board.getPointsAroundShip(3, 0)).toStrictEqual([[2, 0], [2, 1], [3, 1], [4, 1]]);
+    expect(board.getPointsAroundShip(4, 0)).toStrictEqual([[2, 0], [2, 1], [3, 1], [4, 1]]);
+});
+
+test("Test getPointsAroundShip function: Ship at bottom left corner", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 4, 2, "horizontal");
+
+    expect(board.getPointsAroundShip(0, 4)).toStrictEqual([[0, 3], [1, 3], [2, 3], [2, 4]]);
+    expect(board.getPointsAroundShip(1, 4)).toStrictEqual([[0, 3], [1, 3], [2, 3], [2, 4]]);
+});
+
+test("Test getPointsAroundShip function: Ship at bottom right corner", () => {
+    const board = Gameboard(5);
+    board.placeShip(3, 4, 2, "horizontal");
+
+    expect(board.getPointsAroundShip(3, 4)).toStrictEqual([[2, 3], [3, 3], [4, 3], [2, 4]]);
+    expect(board.getPointsAroundShip(4, 4)).toStrictEqual([[2, 3], [3, 3], [4, 3], [2, 4]]);
+});
+
+test("Test getPointsAroundShip function: Ship in the middle horizontally", () => {
+    const board = Gameboard(5);
+    board.placeShip(2, 2, 2, "horizontal");
+
+    expect(board.getPointsAroundShip(2, 2)).toStrictEqual([[1, 1], [2, 1], [3, 1], [4, 1], [1, 2], [4, 2], [1, 3], [2, 3], [3, 3], [4, 3]]);
+    expect(board.getPointsAroundShip(3, 2)).toStrictEqual([[1, 1], [2, 1], [3, 1], [4, 1], [1, 2], [4, 2], [1, 3], [2, 3], [3, 3], [4, 3]]);
+});
+
+test("Test getPointsAroundShip function: Ship in the middle vertically", () => {
+    const board = Gameboard(5);
+    board.placeShip(3, 2, 2, "vertical");
+
+    expect(board.getPointsAroundShip(3, 2)).toStrictEqual([[2, 1], [3, 1], [4, 1], [2, 2], [4, 2], [2, 3], [4, 3], [2, 4], [3, 4], [4, 4]]);
+    expect(board.getPointsAroundShip(3, 3)).toStrictEqual([[2, 1], [3, 1], [4, 1], [2, 2], [4, 2], [2, 3], [4, 3], [2, 4], [3, 4], [4, 4]]);
+});
+
+test("Test getShipByCoordinates function: Coordinates must be integers within the board", () => {
+    const board = Gameboard(5);
+
+    expect(() => board.getShipByCoordinates("0", 0)).toThrow("getShipByCoordinates: Arguments must be non-negative integers");
+    expect(() => board.getShipByCoordinates(0, -1)).toThrow("getShipByCoordinates: Arguments must be non-negative integers");
+    expect(() => board.getShipByCoordinates(0, 5)).toThrow("getShipByCoordinates: Arguments must be inside board");
+});
+
+test("Test getShipByCoordinates function: Should return the correct ship", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(board.getShipByCoordinates(1, 1)).toBeNull();
+    expect(board.getShipByCoordinates(0, 0)).not.toBeNull();
+    expect(board.getShipByCoordinates(1, 0)).not.toBeNull();
+});

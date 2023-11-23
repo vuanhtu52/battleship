@@ -185,6 +185,112 @@ const Gameboard = length => {
         return availablePoints;
     };
 
+    // Get the coordinates of a point, find the ship occupying the point and return the points around the ship
+    const getPointsAroundShip = (x, y) => {
+        // Check if x and y are integers
+        if (Number.isInteger(x) === false || Number.isInteger(y) === false) {
+            throw new Error("getPointsAroundShip: Arguments must be non-negative integers");
+        }
+
+        // Check if x and y are negative
+        if (x < 0 || y < 0) {
+            throw new Error("getPointsAroundShip: Arguments must be non-negative integers");
+        }
+
+        // Check if x and y are outside the board
+        if (x >= _length || y >= _length) {
+            throw new Error("getPointsAroundShip: Point outside board");
+        }
+
+        // Find the ship
+        let ship = null;
+        outerLoop: for (let currentShip of _ships) {
+            const shipPoints = currentShip.getPoints();
+            for (let point of shipPoints) {
+                if (x === point[0] && y === point[1]) {
+                    ship = currentShip;
+                    break outerLoop;
+                }
+            }
+        }
+
+        // Throw error if the point is not occupied by any ship
+        if (ship === null) {
+            throw new Error("getPointsAroundShip: No ship at this point");
+        }
+
+        // Get the points around the ship
+        const points = [];
+        for (let point of ship.getPoints()) {
+            // Get all adjacent points of each ship's point
+            let adjacentPoints = [];
+            adjacentPoints.push([point[0] - 1, point[1] - 1]);
+            adjacentPoints.push([point[0], point[1] - 1]);
+            adjacentPoints.push([point[0] + 1, point[1] - 1]);
+            adjacentPoints.push([point[0] - 1, point[1]]);
+            adjacentPoints.push([point[0] + 1, point[1]]);
+            adjacentPoints.push([point[0] - 1, point[1] + 1]);
+            adjacentPoints.push([point[0], point[1] + 1]);
+            adjacentPoints.push([point[0] + 1, point[1] + 1]);
+
+            // Filter out only the points around the ship
+            outerLoop: for (let adjacentPoint of adjacentPoints)  {
+                // Check if the point is inside the board
+                if (adjacentPoint[0] < 0 || adjacentPoint[0] >= _length || adjacentPoint[1] < 0 || adjacentPoint[1] >= _length) {
+                    continue;
+                }
+                // Check if the point is inside the ship
+                for (let shipPoint of ship.getPoints()) {
+                    if (adjacentPoint[0] === shipPoint[0] && adjacentPoint[1] === shipPoint[1]) {
+                        continue outerLoop;
+                    }
+                }
+                // Check if the point is already added to the list
+                for (let finalPoint of points) {
+                    if (adjacentPoint[0] === finalPoint[0] && adjacentPoint[1] === finalPoint[1]) {
+                        continue outerLoop;
+                    }
+                }
+                // Add the point to the final list if it is valid  
+                points.push(adjacentPoint);
+            }
+        }
+
+        // Sort the points: ascending y then ascencding x
+        points.sort((arr1, arr2) => arr1[1] - arr2[1]);
+
+        return points;
+    };
+
+    // Get the ship occupying the given coordinates
+    const getShipByCoordinates = (x, y) => {
+        // Check if x and y are integers
+        if (Number.isInteger(x) === false || Number.isInteger(y) === false) {
+            throw new Error("getShipByCoordinates: Arguments must be non-negative integers");
+        }
+
+        // Check if x and y are non-negative
+        if (x < 0 || y < 0) {
+            throw new Error("getShipByCoordinates: Arguments must be non-negative integers");
+        }
+
+        // Check if x and y are within the board
+        if (x >= _length || y >= _length) {
+            throw new Error("getShipByCoordinates: Arguments must be inside board");
+        }
+
+        // Find the ship
+        for (let ship of _ships) {
+            for (let point of ship.getPoints()) {
+                if (x === point[0] && y === point[1]) {
+                    return ship;
+                }
+            }
+        }
+
+        return null;
+    };
+
     return {
         getLength,
         placeShip,
@@ -194,6 +300,8 @@ const Gameboard = length => {
         allShipsSunk,
         getAttackedPoints,
         getAvailablePoints,
+        getPointsAroundShip,
+        getShipByCoordinates,
     };
 };
 

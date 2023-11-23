@@ -50,6 +50,7 @@ const ScreenController = () => {
                 // Play the attack and display it on the board
                 gameController.getPlayer1().attack(cell.x, cell.y, gameController.getGameboard2());
                 _updateCell(cell, gameController.getGameboard2(), true, "#A19DB0");
+                _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard2(), gameController.getPlayer1(), document.querySelector(".main-page .player-section:nth-child(2) .board"));
                 if (gameController.findWinner() !== "none") {
                     _endGame();
                 }
@@ -58,6 +59,7 @@ const ScreenController = () => {
                 const attackPoint = gameController.getPlayer2().attackRandom(gameController.getGameboard1());
                 const cellIndex = attackPoint[0] + 1 + gameController.getGameboard1().getLength()*attackPoint[1];
                 _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex})`), gameController.getGameboard1(), false, "#38BDF8");
+                _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard1(), gameController.getPlayer2(), document.querySelector(".main-page .player-section:first-child .board"));
                 if (gameController.findWinner() !== "none") {
                     _endGame();
                 }
@@ -115,6 +117,25 @@ const ScreenController = () => {
                     }, 150);
                 }
                 break;
+            }
+        }
+    };
+
+    // Uncover the adjacent cells if the ship is sunk
+    const _updateAdjacentCells = (x, y, boardFactory, player, board) => {
+        // Check if the ship at the coordinates has been sunk
+        const ship = boardFactory.getShipByCoordinates(x, y);
+        if (ship !== null && ship.isSunk() === true) {
+            const points = boardFactory.getPointsAroundShip(x, y);
+            for (let point of points) {
+                try {
+                    player.attack(point[0], point[1], boardFactory);
+                } catch (error) {
+                    continue;
+                }
+                const cellIndex = point[0] + 1 + boardFactory.getLength()*point[1];
+                const cell = board.querySelector(`.cell:nth-child(${cellIndex})`);
+                _updateCell(cell, boardFactory);
             }
         }
     };
