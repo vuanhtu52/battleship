@@ -1,6 +1,7 @@
 import createDot from "../components/dot/dot";
 import createMainPage from "../components/mainPage/mainPage";
 import createNavBar from "../components/navBar/navBar";
+import createPlaceShipPage from "../components/placeShipPage/placeShipPage";
 import GameController from "./GameController";
 
 const ScreenController = () => {
@@ -19,7 +20,10 @@ const ScreenController = () => {
         document.body.appendChild(pageWrapper);
 
         // Load main page
-        _loadPage(pageWrapper, "main");
+        // _loadPage(pageWrapper, "main");
+
+        // Load place ship page
+        _loadPage(pageWrapper, "placeShip");
     };
 
     const _loadPage = (pageWrapper, pageId) => {
@@ -31,6 +35,8 @@ const ScreenController = () => {
         // Add new page
         if (pageId === "main") {
             _loadMainPage(pageWrapper);
+        } else if (pageId === "placeShip") {
+            pageWrapper.appendChild(createPlaceShipPage());
         }
     };
 
