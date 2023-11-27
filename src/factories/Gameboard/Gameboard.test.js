@@ -66,6 +66,17 @@ test("Test placeShip function: Check if the ship's position overlaps with other 
     expect(() => board.placeShip(1, 1, 2, "vertical")).not.toThrow("placeShip: Ship overlaps with others");
 });
 
+test("Test placeShip function: A ship cannot occupy a cell surrounding another ship", () => {
+    const board = Gameboard(10);
+    board.placeShip(2, 1, 4, "horizontal");
+
+    expect(() => board.placeShip(0, 0, 2, "horizontal")).toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.placeShip(1, 1, 2, "vertical")).toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.placeShip(6, 0, 5, "vertical")).toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.placeShip(6, 2, 2, "horizontal")).toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.placeShip(0, 2, 2, "vertical")).not.toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
+});
+
 test("Test getShips function", () => {
     const board = Gameboard(5);
     expect(board.getShips().length).toBe(0);
@@ -73,7 +84,7 @@ test("Test getShips function", () => {
     board.placeShip(0, 0, 4, "horizontal");
     expect(board.getShips().length).toBe(1);
 
-    board.placeShip(1, 1, 2, "vertical");
+    board.placeShip(1, 2, 2, "vertical");
     expect(board.getShips().length).toBe(2);
 });
 
@@ -92,11 +103,11 @@ test("Test receiveAttack function: Check if the parameters are integers and with
 test("Test receiveAttack function: Check if the function detects when a ship is hit", () => {
     const board = Gameboard(5);
     board.placeShip(0, 0, 4, "horizontal");
-    board.placeShip(4, 1, 2, "vertical");
+    board.placeShip(4, 2, 2, "vertical");
     board.receiveAttack(0, 0);
     board.receiveAttack(3, 0);
     board.receiveAttack(4, 0);
-    board.receiveAttack(4, 1);
+    board.receiveAttack(4, 2);
     board.receiveAttack(4, 4);
 
     expect(board.getShips()[0].getHitCount()).toBe(2);
@@ -106,14 +117,14 @@ test("Test receiveAttack function: Check if the function detects when a ship is 
 test("Test receiveAttack function: Check if the function records the correct missed shots", () => {
     const board = Gameboard(5);
     board.placeShip(0, 0, 4, "horizontal");
-    board.placeShip(4, 1, 2, "vertical");
+    board.placeShip(4, 2, 2, "vertical");
 
     expect(board.getMissedShots()).toStrictEqual([]);
 
     board.receiveAttack(0, 0);
     board.receiveAttack(3, 0);
     board.receiveAttack(4, 0);
-    board.receiveAttack(4, 1);
+    board.receiveAttack(4, 2);
     board.receiveAttack(4, 4);
     
     expect(board.getMissedShots()).toStrictEqual([[4, 0], [4, 4]]);
@@ -133,7 +144,7 @@ test("Test allShipsSunk function", () => {
     expect(() => board.allShipsSunk()).toThrow("allShipsSunk: No ships on the board");
 
     board.placeShip(0, 0, 2, "horizontal");
-    board.placeShip(1, 1, 3, "vertical");
+    board.placeShip(3, 1, 3, "vertical");
 
     expect(board.allShipsSunk()).toBe(false);
     board.receiveAttack(0, 0);
@@ -142,13 +153,13 @@ test("Test allShipsSunk function", () => {
     expect(board.allShipsSunk()).toBe(false);
     board.receiveAttack(2, 0);
     expect(board.allShipsSunk()).toBe(false);
-    board.receiveAttack(1, 1);
+    board.receiveAttack(3, 1);
     expect(board.allShipsSunk()).toBe(false);
-    board.receiveAttack(1, 2);
+    board.receiveAttack(3, 2);
     expect(board.allShipsSunk()).toBe(false);
-    board.receiveAttack(1, 3);
+    board.receiveAttack(3, 3);
     expect(board.allShipsSunk()).toBe(true);
-    board.receiveAttack(1, 4);
+    board.receiveAttack(3, 4);
     expect(board.allShipsSunk()).toBe(true);
 });
 

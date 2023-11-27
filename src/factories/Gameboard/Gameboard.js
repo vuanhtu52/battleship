@@ -80,6 +80,28 @@ const Gameboard = length => {
             }
         }
 
+        // Check if the ship occupies a cell surrounding another ship
+        // Loop over each point on the ship, get the surrounding points and check if they are occupied by other ships
+        for (let shipPoint of shipPoints) {
+            let surroundingPoints = [];
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0], shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1]]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1]]);
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1] + 1]);
+            surroundingPoints.push([shipPoint[0], shipPoint[1] + 1]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1] + 1]);
+
+            for (let surroundingPoint of surroundingPoints) {
+                for (let occupiedPoint of occupiedPoints) {
+                    if (surroundingPoint[0] === occupiedPoint[0] && surroundingPoint[1] === occupiedPoint[1]) {
+                        throw new Error("placeShip: A ship cannot occupy a cell surrounding another ship");
+                    }
+                }
+            }
+        }
+
         ship.setPosition([x, y], endPoint);
         _ships.push(ship);
     };
