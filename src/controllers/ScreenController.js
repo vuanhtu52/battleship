@@ -2,6 +2,7 @@ import createDot from "../components/dot/dot";
 import createMainPage from "../components/mainPage/mainPage";
 import createNavBar from "../components/navBar/navBar";
 import createPlaceShipPage from "../components/placeShipPage/placeShipPage";
+import coordinatesToIndex from "../utils/coordinatesToIndex/coordinatesToIndex";
 import GameController from "./GameController";
 
 const ScreenController = () => {
@@ -20,10 +21,10 @@ const ScreenController = () => {
         document.body.appendChild(pageWrapper);
 
         // Load main page
-        // _loadPage(pageWrapper, "main");
+        _loadPage(pageWrapper, "main");
 
         // Load place ship page
-        _loadPage(pageWrapper, "placeShip");
+        // _loadPage(pageWrapper, "placeShip");
     };
 
     const _loadPage = (pageWrapper, pageId) => {
@@ -63,8 +64,8 @@ const ScreenController = () => {
 
                 // Computer's turn to attack
                 const attackPoint = gameController.getPlayer2().attackRandom(gameController.getGameboard1());
-                const cellIndex = attackPoint[0] + 1 + gameController.getGameboard1().getLength()*attackPoint[1];
-                _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex})`), gameController.getGameboard1(), false, "#38BDF8");
+                const cellIndex = coordinatesToIndex(attackPoint[0], attackPoint[1], gameController.getGameboard1().getLength());
+                _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex + 1})`), gameController.getGameboard1(), false, "#38BDF8");
                 _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard1(), gameController.getPlayer2(), document.querySelector(".main-page .player-section:first-child .board"));
                 if (gameController.findWinner() !== "none") {
                     _endGame();
@@ -86,8 +87,8 @@ const ScreenController = () => {
                 shipPoints = shipPoints.concat(ship.getPoints());
             });
             shipPoints.forEach(point => {
-                const cellIndex = point[0] + 1 + boardFactory.getLength()*point[1];
-                const cell = board.querySelector(`.cell:nth-child(${cellIndex})`);
+                const cellIndex = coordinatesToIndex(point[0], point[1], boardFactory.getLength());
+                const cell = board.querySelector(`.cell:nth-child(${cellIndex + 1})`);
                 cell.style.backgroundColor = shipColor; 
             });
         }
@@ -139,8 +140,8 @@ const ScreenController = () => {
                 } catch (error) {
                     continue;
                 }
-                const cellIndex = point[0] + 1 + boardFactory.getLength()*point[1];
-                const cell = board.querySelector(`.cell:nth-child(${cellIndex})`);
+                const cellIndex = coordinatesToIndex(point[0], point[1], boardFactory.getLength());
+                const cell = board.querySelector(`.cell:nth-child(${cellIndex + 1})`);
                 _updateCell(cell, boardFactory);
             }
         }
