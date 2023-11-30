@@ -77,6 +77,96 @@ test("Test placeShip function: A ship cannot occupy a cell surrounding another s
     expect(() => board.placeShip(0, 2, 2, "vertical")).not.toThrow("placeShip: A ship cannot occupy a cell surrounding another ship");
 });
 
+test("Test getShipPlacingPoints function: Test if x and y are integers", () => {
+    const board = Gameboard(10);
+
+    expect(() => board.getShipPlacingPoints("1", 2, 3, "horizontal")).toThrow("getShipPlacingPoints: x must be integer");
+    expect(() => board.getShipPlacingPoints(1.5, 2, 3, "horizontal")).toThrow("getShipPlacingPoints: x must be integer");
+    expect(() => board.getShipPlacingPoints(1, "2", 3, "horizontal")).toThrow("getShipPlacingPoints: y must be integer");
+    expect(() => board.getShipPlacingPoints(1, 2.5, 3, "horizontal")).toThrow("getShipPlacingPoints: y must be integer");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "horizontal")).not.toThrow("getShipPlacingPoints: x must be integer");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "horizontal")).not.toThrow("getShipPlacingPoints: y must be integer");
+});
+
+test("Test getShipPlacingPoints function: Test if x and y are within the board", () => {
+    const board = Gameboard(10);
+    
+    expect(() => board.getShipPlacingPoints(-1, 2, 3, "vertical")).toThrow("getShipPlacingPoints: x must be within the board");
+    expect(() => board.getShipPlacingPoints(10, 2, 3, "vertical")).toThrow("getShipPlacingPoints: x must be within the board");
+    expect(() => board.getShipPlacingPoints(0, 2, 3, "vertical")).not.toThrow("getShipPlacingPoints: x must be within the board");
+    expect(() => board.getShipPlacingPoints(9, 2, 3, "vertical")).not.toThrow("getShipPlacingPoints: x must be within the board");
+
+    expect(() => board.getShipPlacingPoints(1, -1, 3, "horizontal")).toThrow("getShipPlacingPoints: y must be within the board");
+    expect(() => board.getShipPlacingPoints(1, 10, 3, "horizontal")).toThrow("getShipPlacingPoints: y must be within the board");
+    expect(() => board.getShipPlacingPoints(1, 0, 3, "horizontal")).not.toThrow("getShipPlacingPoints: y must be within the board");
+    expect(() => board.getShipPlacingPoints(1, 9, 3, "horizontal")).not.toThrow("getShipPlacingPoints: y must be within the board");
+});
+
+test("Test getShipPlacingPoints: Test if shipLength is an integer", () => {
+    const board = Gameboard(10);
+
+    expect(() => board.getShipPlacingPoints(1, 2, "3", "vertical")).toThrow("getShipPlacingPoints: shipLength must be integer");
+    expect(() => board.getShipPlacingPoints(1, 2, 3.5, "vertical")).toThrow("getShipPlacingPoints: shipLength must be integer");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "vertical")).not.toThrow("getShipPlacingPoints: shipLength must be integer");
+});
+
+test("Test getShipPlacingPoints: shipLength must be positive", () => {
+    const board = Gameboard(10);
+
+    expect(() => board.getShipPlacingPoints(1, 2, 0, "vertical")).toThrow("getShipPlacingPoints: shipLength must be positive");
+    expect(() => board.getShipPlacingPoints(1, 2, -1, "vertical")).toThrow("getShipPlacingPoints: shipLength must be positive");
+    expect(() => board.getShipPlacingPoints(1, 2, 1, "vertical")).not.toThrow("getShipPlacingPoints: shipLength must be positive");
+});
+
+test("Test getShipPlacingPoints function: Check if direction is either horizontal or vertical", () => {
+    const board = Gameboard(10);
+
+    expect(() => board.getShipPlacingPoints(1, 2, 3)).toThrow("getShipPlacingPoints: direction must be horizontal or vertical");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, 4)).toThrow("getShipPlacingPoints: direction must be horizontal or vertical");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "hello")).toThrow("getShipPlacingPoints: direction must be horizontal or vertical");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "horizontal")).not.toThrow("getShipPlacingPoints: direction must be horizontal or vertical");
+    expect(() => board.getShipPlacingPoints(1, 2, 3, "vertical")).not.toThrow("getShipPlacingPoints: direction must be horizontal or vertical");
+});
+
+test("Test getShipPlacingPoints function: Check if the ship's end-point is outside the board", () => {
+    const board = Gameboard(5);
+    expect(() => board.getShipPlacingPoints(0, 2, 6, "horizontal")).toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(0, 2, 5, "horizontal")).not.toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(1, 2, 5, "horizontal")).toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(1, 2, 4, "horizontal")).not.toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(1, 0, 6, "vertical")).toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(1, 0, 5, "vertical")).not.toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(0, 1, 5, "vertical")).toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+    expect(() => board.getShipPlacingPoints(1, 1, 4, "vertical")).not.toThrow("getShipPlacingPoints: Ship's end-point exceeds the board's area");
+});
+
+test("Test getShipPlacingPoints function: Check if the ship's position overlaps with other ships", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 4, "horizontal");
+
+    expect(() => board.getShipPlacingPoints(0, 0, 2, "vertical")).toThrow("getShipPlacingPoints: Ship overlaps with others");
+    expect(() => board.getShipPlacingPoints(0, 5, 2, "horizontal")).not.toThrow("getShipPlacingPoints: Ship overlaps with others");
+    expect(() => board.getShipPlacingPoints(1, 1, 2, "vertical")).not.toThrow("getShipPlacingPoints: Ship overlaps with others");
+});
+
+test("Test getShipPlacingPoints function: A ship cannot occupy a cell surrounding another ship", () => {
+    const board = Gameboard(10);
+    board.placeShip(2, 1, 4, "horizontal");
+
+    expect(() => board.getShipPlacingPoints(0, 0, 2, "horizontal")).toThrow("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.getShipPlacingPoints(1, 1, 2, "vertical")).toThrow("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.getShipPlacingPoints(6, 0, 5, "vertical")).toThrow("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.getShipPlacingPoints(6, 2, 2, "horizontal")).toThrow("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+    expect(() => board.getShipPlacingPoints(0, 2, 2, "vertical")).not.toThrow("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+});
+
+test("Test getShipPlacingPoints function: Must return correct points", () => {
+    const board = Gameboard(10);
+    board.placeShip(2, 1, 4, "horizontal");
+
+    expect(board.getShipPlacingPoints(7, 0, 2, "horizontal")).toStrictEqual([[7, 0], [8, 0]]);
+});
+
 test("Test getShips function", () => {
     const board = Gameboard(5);
     expect(board.getShips().length).toBe(0);

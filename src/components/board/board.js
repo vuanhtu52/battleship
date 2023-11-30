@@ -20,17 +20,19 @@ const createCell = (color, hoverColor, x, y) => {
     // Set background color
     cell.style.backgroundColor = color;
 
-    // Change color when hovering
-    cell.addEventListener("mouseover", () => {
-        cell.style.backgroundColor = hoverColor;
-    });
+    if (hoverColor !== null) {
+        // Change color when hovering
+        cell.addEventListener("mouseover", () => {
+            cell.style.backgroundColor = hoverColor;
+        });
 
-    // Change color when not hovering anymore
-    cell.addEventListener("mouseout", () => {
-        setTimeout(() => {
-            cell.style.backgroundColor = color;
-        }, 100);
-    });
+        // Change color when not hovering anymore
+        cell.addEventListener("mouseout", () => {
+            setTimeout(() => {
+                cell.style.backgroundColor = color;
+            }, 100);
+        });
+    }
 
     // Save coordinates
     cell.x = x;

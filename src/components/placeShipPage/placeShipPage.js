@@ -29,9 +29,10 @@ const createPlaceShipPage = () => {
     const boardWrapper = document.createElement("div");
     boardWrapper.className = "board-wrapper";
 
-    const board = createBoard(10, "#bae6fd", "#bae6fd");
+    const board = createBoard(10, "#bae6fd", null);
     board.className = "board";
     boardWrapper.appendChild(board);
+
 
     mainSection.appendChild(boardWrapper);
 
@@ -44,6 +45,11 @@ const createPlaceShipPage = () => {
     shipYard.appendChild(createShip(3, "#38bdf8"));
     shipYard.appendChild(createShip(3, "#38bdf8"));
     shipYard.appendChild(createShip(2, "#38bdf8"));
+
+    shipYard.querySelectorAll(".ship").forEach(ship => {
+        const shipIndex = Array.from(shipYard.children).indexOf(ship);
+        ship.id = `ship-${shipIndex}`;
+    });
 
     mainSection.appendChild(shipYard);
 

@@ -17,17 +17,17 @@ const GameController = () => {
         _gameboard2 = Gameboard(10);
 
         // Hard-code the ships for now
-        _gameboard1.placeShip(1, 8, 5, "horizontal");
-        _gameboard1.placeShip(2, 1, 4, "horizontal");
-        _gameboard1.placeShip(0, 2, 3, "vertical");
-        _gameboard1.placeShip(9, 6, 3, "vertical");
-        _gameboard1.placeShip(6, 3, 2, "vertical");
+        // _gameboard1.placeShip(1, 8, 5, "horizontal");
+        // _gameboard1.placeShip(2, 1, 4, "horizontal");
+        // _gameboard1.placeShip(0, 2, 3, "vertical");
+        // _gameboard1.placeShip(9, 6, 3, "vertical");
+        // _gameboard1.placeShip(6, 3, 2, "vertical");
 
-        _gameboard2.placeShip(1, 8, 5, "horizontal");
-        _gameboard2.placeShip(2, 1, 4, "horizontal");
-        _gameboard2.placeShip(0, 2, 3, "vertical");
-        _gameboard2.placeShip(9, 6, 3, "vertical");
-        _gameboard2.placeShip(6, 3, 2, "vertical");
+        // _gameboard2.placeShip(1, 8, 5, "horizontal");
+        // _gameboard2.placeShip(2, 1, 4, "horizontal");
+        // _gameboard2.placeShip(0, 2, 3, "vertical");
+        // _gameboard2.placeShip(9, 6, 3, "vertical");
+        // _gameboard2.placeShip(6, 3, 2, "vertical");
     };
 
     const getPlayer1 = () => _player1;

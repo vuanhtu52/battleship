@@ -106,6 +106,103 @@ const Gameboard = length => {
         _ships.push(ship);
     };
 
+    // Return the points if they can be occupied by a ship
+    const getShipPlacingPoints = (x, y, shipLength, direction) => {
+        // Check if x is integer
+        if (Number.isInteger(x) === false) {
+            throw new Error("getShipPlacingPoints: x must be integer");
+        }
+
+        // Check if y is integer
+        if (Number.isInteger(y) === false) {
+            throw new Error("getShipPlacingPoints: y must be integer");
+        }
+
+        // Check if x is within the board
+        if (x < 0 || x >= _length) {
+            throw new Error("getShipPlacingPoints: x must be within the board");
+        }
+
+        // Check if y is within the board
+        if (y < 0 || y >= _length) {
+            throw new Error("getShipPlacingPoints: y must be within the board");
+        }
+
+        // Check if shipLength is integer
+        if (Number.isInteger(shipLength) === false) {
+            throw new Error("getShipPlacingPoints: shipLength must be integer");
+        }
+
+        // Check if shipLength is positive
+        if (shipLength <= 0) {
+            throw new Error("getShipPlacingPoints: shipLength must be positive");
+        }
+
+        // direction can only be "horizontal" or "vertical"
+        if (direction !== "horizontal" && direction !== "vertical") {
+            throw new Error("getShipPlacingPoints: direction must be horizontal or vertical");
+        }
+
+        // Check if the ship's end point is outside the board
+        let endPoint = [x, y];
+        if (direction === "horizontal") {
+            endPoint[0] += shipLength - 1;
+        } else if (direction === "vertical") {
+            endPoint[1] += shipLength - 1;
+        }
+        if (endPoint[0] >= _length || endPoint[1] >= _length) {
+            throw new Error("getShipPlacingPoints: Ship's end-point exceeds the board's area")
+        }
+
+        // Check if the ship overlaps with other ships
+        const occupiedPoints = _getOccupiedPoints();
+        const shipPoints = [];
+
+        if (direction === "horizontal") {
+            for (let i = x; i <= endPoint[0]; i++) {
+                shipPoints.push([i, y]);
+            }
+        } else if (direction === "vertical") {
+            for (let i = y; i <= endPoint[1]; i++) {
+                shipPoints.push([x, i]);
+            }
+        }
+
+        for (let shipPoint of shipPoints) {
+            for (let occupiedPoint of occupiedPoints) {
+                if (shipPoint[0] === occupiedPoint[0] && shipPoint[1] === occupiedPoint[1]) {
+                    throw new Error("getShipPlacingPoints: Ship overlaps with others");
+                }
+            }
+        }
+
+        // Check if the ship occupies a cell surrounding another ship
+        // Loop over each point on the ship, get the surrounding points and check if they are occupied by other ships
+        for (let shipPoint of shipPoints) {
+            let surroundingPoints = [];
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0], shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1] - 1]);
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1]]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1]]);
+            surroundingPoints.push([shipPoint[0] - 1, shipPoint[1] + 1]);
+            surroundingPoints.push([shipPoint[0], shipPoint[1] + 1]);
+            surroundingPoints.push([shipPoint[0] + 1, shipPoint[1] + 1]);
+
+            for (let surroundingPoint of surroundingPoints) {
+                for (let occupiedPoint of occupiedPoints) {
+                    if (surroundingPoint[0] === occupiedPoint[0] && surroundingPoint[1] === occupiedPoint[1]) {
+                        throw new Error("getShipPlacingPoints: A ship cannot occupy a cell surrounding another ship");
+                    }
+                }
+            }
+        }
+
+        const ship = Ship(shipLength);
+        ship.setPosition([x, y], endPoint);
+        return ship.getPoints();
+    };
+
     const getShips = () => _ships;
 
     // Get all the points occupied by the current ships
@@ -316,6 +413,7 @@ const Gameboard = length => {
     return {
         getLength,
         placeShip,
+        getShipPlacingPoints,
         getShips,
         receiveAttack,
         getMissedShots,

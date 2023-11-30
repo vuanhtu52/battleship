@@ -33,4 +33,4 @@ test("Test indexToCoordinates function: Function must return correct x and y", (
     expect(indexToCoordinates(90, 10)).toStrictEqual([0, 9]);
     expect(indexToCoordinates(33, 10)).toStrictEqual([3, 3]);
     expect(indexToCoordinates(23, 5)).toStrictEqual([3, 4]);
-})
+});
