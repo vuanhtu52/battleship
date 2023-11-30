@@ -516,6 +516,12 @@ const Gameboard = length => {
         ship.setPosition(newShipPoints[0], newShipPoints[newShipPoints.length - 1]);
     };
 
+    const reset = () => {
+        _ships = []; 
+        _missedShots = [];
+        _attackedPoints = [];
+    };
+
     return {
         getLength,
         placeShip,
@@ -529,6 +535,7 @@ const Gameboard = length => {
         getPointsAroundShip,
         getShipByCoordinates,
         rotateShip,
+        reset,
     };
 };
 

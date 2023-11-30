@@ -213,6 +213,13 @@ const ScreenController = () => {
                 } catch (error) {
                     console.log(error);
                 }
+
+                // Enable reset button if there is at least 1 ship on the board
+                const resetButton = document.querySelector(".place-ship-page .reset-button");
+                if (gameController.getGameboard1().getShips().length > 0) {
+                    resetButton.disabled = false;
+                    resetButton.style.pointerEvents = "auto";
+                }
             });
 
             cell.addEventListener("dragenter", () => {
@@ -280,6 +287,24 @@ const ScreenController = () => {
                     console.log(error);
                 }
             });
+        });
+
+        // Reset the page when user clicks on reset button
+        const resetButton = document.querySelector(".place-ship-page .reset-button");
+        resetButton.addEventListener("click", () => {
+            // Reset gameboard
+            gameController.getGameboard1().reset();
+            // Reset colors for the board
+            document.querySelectorAll(".place-ship-page .board .cell").forEach(cell => {
+                cell.style.backgroundColor = "#BAE6FD";
+            })
+            // Display the ships again
+            document.querySelectorAll(".place-ship-page .ship-yard .ship").forEach(ship => {
+                ship.style.visibility = "visible";
+            });
+            // Disable reset button
+            resetButton.disabled = true;
+            resetButton.style.pointerEvents = "none";
         });
     };
 

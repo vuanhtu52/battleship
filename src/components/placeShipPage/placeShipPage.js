@@ -63,12 +63,16 @@ const createPlaceShipPage = () => {
     const resetButton = document.createElement("button");
     resetButton.className = "reset-button";
     resetButton.textContent = "Reset";
+    resetButton.disabled = true;
+    resetButton.style.pointerEvents = "none";
     buttons.appendChild(resetButton);
 
     // Add start button
     const startButton = document.createElement("button");
     startButton.className = "start-button";
     startButton.textContent = "Start";
+    startButton.disabled = true;
+    startButton.style.pointerEvents = "none";
     buttons.appendChild(startButton);
 
     page.appendChild(buttons);
