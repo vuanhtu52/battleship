@@ -207,7 +207,7 @@ const Gameboard = length => {
 
     // Get all the points occupied by the current ships
     const _getOccupiedPoints = () => {
-        let points = []
+        let points = [];
 
         _ships.forEach(ship => {
             points = points.concat(ship.getPoints());
@@ -410,6 +410,112 @@ const Gameboard = length => {
         return null;
     };
 
+    // Given the coordinates of a ship, rotate it from horizontal to verical or vice versa
+    const rotateShip = (x, y) => {
+        // Check if x and y are integers
+        if (Number.isInteger(x) === false || Number.isInteger(y) === false) {
+            throw new Error("rotateShip: x and y must be integers");
+        }
+
+        // Check if x is within the board
+        if (x < 0 || x >= _length) {
+            throw new Error("rotateShip: x and y must be within the board");
+        }
+
+        // Check if y is within the board
+        if (y < 0 || y >= _length) {
+            throw new Error("rotateShip: x and y must be within the board");
+        }
+
+        // Check if the point is occupied by a ship
+        let isOccupied = false;
+        const occupiedPoints = _getOccupiedPoints();
+        occupiedPoints.forEach(point => {
+            if (point[0] === x && point[1] === y) {
+                isOccupied = true;
+            }
+        });
+        if (isOccupied === false) {
+            throw new Error("rotateShip: Point is not occupied by any ship");
+        }
+
+        // Get the new ship points after rotating
+        const ship = getShipByCoordinates(x, y);
+        let newShipPoints = [];
+        if (ship.getLength() === 1) {
+            newShipPoints = ship.getPoints();
+        } else {
+            // Get direction of the ship
+            let direction = "";
+            if (ship.getPoints()[0][1] === ship.getPoints()[1][1]) {
+                direction = "horizontal";
+            } else {
+                direction = "vertical";
+            }
+
+            // Get the new ship points
+            for (let i = 0; i < ship.getLength(); i++) {
+                 if (direction === "horizontal") {
+                    newShipPoints.push([ship.getPoints()[0][0], ship.getPoints()[0][1] + i]);
+                 } else {
+                    newShipPoints.push([ship.getPoints()[0][0] + i, ship.getPoints()[0][1]]);
+                 }  
+            }            
+        }
+
+        // Check if the new ship's end point exceeds the board
+        if (newShipPoints[newShipPoints.length - 1][0] < 0 || newShipPoints[newShipPoints.length - 1][0] >= length || newShipPoints[newShipPoints.length - 1][1] < 0 || newShipPoints[newShipPoints.length - 1][1] >= _length) {
+            throw new Error("rotateShip: New ship's end point must be within the board");
+        }
+
+        // // Get the new available points
+        // const availablePoints = getAvailablePoints();
+        // availablePoints = availablePoints.concat(ship.getPoints());
+
+        // Get the new occupied points
+        let newOccupiedPoints = _getOccupiedPoints();
+        for (let shipPoint of ship.getPoints()) {
+            newOccupiedPoints = newOccupiedPoints.filter(point => {
+                if (point[0] !== shipPoint[0] || point[1] !== shipPoint[1]) {
+                    return point;
+                } 
+            });
+        }
+
+        // Check if the new ship points overlap with others
+        newShipPoints.forEach(newShipPoint => {
+            for (let newOccupiedPoint of newOccupiedPoints) {
+                if (newShipPoint[0] === newOccupiedPoint[0] && newShipPoint[1] === newOccupiedPoint[1]) {
+                    throw new Error("rotateShip: Ship overlaps with others");
+                }
+            }
+        });
+
+        // Check if the new ship is adjacent to others
+        for (let newShipPoint of newShipPoints) {
+            let surroundingPoints = [];
+            surroundingPoints.push([newShipPoint[0] - 1, newShipPoint[1] - 1]);
+            surroundingPoints.push([newShipPoint[0], newShipPoint[1] - 1]);
+            surroundingPoints.push([newShipPoint[0] + 1, newShipPoint[1] - 1]);
+            surroundingPoints.push([newShipPoint[0] - 1, newShipPoint[1]]);
+            surroundingPoints.push([newShipPoint[0] + 1, newShipPoint[1]]);
+            surroundingPoints.push([newShipPoint[0] - 1, newShipPoint[1] + 1]);
+            surroundingPoints.push([newShipPoint[0], newShipPoint[1] + 1]);
+            surroundingPoints.push([newShipPoint[0] + 1, newShipPoint[1] + 1]);
+
+            for (let surroundingPoint of surroundingPoints) {
+                for (let occupiedPoint of newOccupiedPoints) {
+                    if (surroundingPoint[0] === occupiedPoint[0] && surroundingPoint[1] === occupiedPoint[1]) {
+                        throw new Error("rotateShip: Ship is adjacent to others");
+                    }
+                }
+            }
+        }
+
+        // Rotate the ship
+        ship.setPosition(newShipPoints[0], newShipPoints[newShipPoints.length - 1]);
+    };
+
     return {
         getLength,
         placeShip,
@@ -422,6 +528,7 @@ const Gameboard = length => {
         getAvailablePoints,
         getPointsAroundShip,
         getShipByCoordinates,
+        rotateShip,
     };
 };
 

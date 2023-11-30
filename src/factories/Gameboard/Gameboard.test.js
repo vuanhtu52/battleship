@@ -353,3 +353,69 @@ test("Test getShipByCoordinates function: Should return the correct ship", () =>
     expect(board.getShipByCoordinates(0, 0)).not.toBeNull();
     expect(board.getShipByCoordinates(1, 0)).not.toBeNull();
 });
+
+test("Test rotateShip function: x and y must be integers", () => {
+    const board = Gameboard(5);
+
+    expect(() => board.rotateShip("1", 2)).toThrow("rotateShip: x and y must be integers");
+    expect(() => board.rotateShip(1, "2")).toThrow("rotateShip: x and y must be integers");
+    expect(() => board.rotateShip(1, 2)).not.toThrow("rotateShip: x and y must be integers");
+});
+
+test("Test rorateShip function: x and y must be within the board", () => {
+    const board = Gameboard(5);
+
+    expect(() => board.rotateShip(-1, 2)).toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(5, 2)).toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(0, 2)).not.toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(4, 2)).not.toThrow("rotateShip: x and y must be within the board");
+
+    expect(() => board.rotateShip(1, -1)).toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(1, 5)).toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(1, 0)).not.toThrow("rotateShip: x and y must be within the board");
+    expect(() => board.rotateShip(1, 4)).not.toThrow("rotateShip: x and y must be within the board");
+});
+
+test("Test rotateShip function: Given point must be occupied by a ship", () => {
+    let board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(() => board.rotateShip(0, 1)).toThrow("rotateShip: Point is not occupied by any ship");
+    expect(() => board.rotateShip(2, 0)).toThrow("rotateShip: Point is not occupied by any ship");
+    expect(() => board.rotateShip(0, 0)).not.toThrow("rotateShip: Point is not occupied by any ship");
+
+    board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+    expect(() => board.rotateShip(1, 0)).not.toThrow("rotateShip: Point is not occupied by any ship");
+});
+
+test("Test rotateShip function: New ship's end point must be within the board", () => {
+    const board = Gameboard(5);
+    board.placeShip(0, 0, 2, "horizontal");
+    board.placeShip(3, 4, 2, "horizontal");
+    board.placeShip(4, 0, 2, "vertical");
+
+    expect(() => board.rotateShip(3, 4)).toThrow("rotateShip: New ship's end point must be within the board");
+    expect(() => board.rotateShip(4, 0)).toThrow("rotateShip: New ship's end point must be within the board");
+    expect(() => board.rotateShip(0, 0)).not.toThrow("rotateShip: New ship's end point must be within the board");
+});
+
+test("Test rotateShip function: New points must not be occupied by another ship", () => {
+    const board = Gameboard(10);
+    board.placeShip(0, 0, 3, "horizontal");
+    board.placeShip(0, 2, 3, "horizontal");
+
+    expect(() => board.rotateShip(0, 0)).toThrow("rotateShip: Ship overlaps with others");
+    expect(() => board.rotateShip(0, 2)).not.toThrow("rotateShip: Ship overlaps with others");
+});
+
+test("Test rotateShip function: New points must not be adjacent to another ship", () => {
+    const board = Gameboard(10);
+    board.placeShip(0, 0, 2, "horizontal");
+    board.placeShip(0, 2, 3, "horizontal");
+
+    expect(() => board.rotateShip(0, 0)).toThrow("rotateShip: Ship is adjacent to others");
+    expect(() => board.rotateShip(1, 0)).toThrow("rotateShip: Ship is adjacent to others");
+    expect(() => board.rotateShip(0, 2)).not.toThrow("rotateShip: Ship is adjacent to others");
+    expect(() => board.rotateShip(2, 2)).not.toThrow("rotateShip: Ship is adjacent to others");
+});

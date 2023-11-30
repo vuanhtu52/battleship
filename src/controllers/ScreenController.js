@@ -21,7 +21,7 @@ const ScreenController = () => {
         pageWrapper.className = "page-wrapper";
         document.body.appendChild(pageWrapper);
 
-        // Load main page
+        // Load main pages
         // _loadPage(pageWrapper, "main");
 
         // Load place ship page
@@ -249,6 +249,35 @@ const ScreenController = () => {
                     });
                 } catch (error) {
                     // console.log(error);
+                }
+            });
+        });
+
+        // Rotate the ship when user clicks on it
+        document.querySelectorAll(".place-ship-page .board .cell").forEach(cell => {
+            cell.addEventListener("click", () => {
+                const cellIndex = Array.from(cell.parentElement.children).indexOf(cell);
+                const [x, y] = indexToCoordinates(cellIndex, gameController.getGameboard1().getLength());
+                try {
+                    const startPoint = gameController.getGameboard1().getShipByCoordinates(x, y).getPoints()[0];
+                    const oldShipPoints = gameController.getGameboard1().getShipByCoordinates(x, y).getPoints();
+                    // Rotate the ship
+                    gameController.getGameboard1().rotateShip(x, y);
+                    // Change color for old points
+                    oldShipPoints.forEach(point => {
+                        const cellIndex = coordinatesToIndex(point[0], point[1], gameController.getGameboard1().getLength());
+                        const cell = document.querySelector(`.place-ship-page .board .cell:nth-child(${cellIndex + 1})`);
+                        cell.style.backgroundColor = "#BAE6FD";
+                    });
+                    // Update color for new ship points
+                    const newShipPoints = gameController.getGameboard1().getShipByCoordinates(startPoint[0], startPoint[1]).getPoints();
+                    newShipPoints.forEach(point => {
+                        const cellIndex = coordinatesToIndex(point[0], point[1], gameController.getGameboard1().getLength());
+                        const cell = document.querySelector(`.place-ship-page .board .cell:nth-child(${cellIndex + 1})`);
+                        cell.style.backgroundColor = "#38BDF8";
+                    });
+                } catch (error) {
+                    console.log(error);
                 }
             });
         });
