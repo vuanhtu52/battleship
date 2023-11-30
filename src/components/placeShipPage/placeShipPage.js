@@ -55,11 +55,23 @@ const createPlaceShipPage = () => {
 
     page.appendChild(mainSection);
 
+    // Buttons
+    const buttons = document.createElement("div");
+    buttons.className = "buttons";
+
+    // Add reset button
+    const resetButton = document.createElement("button");
+    resetButton.className = "reset-button";
+    resetButton.textContent = "Reset";
+    buttons.appendChild(resetButton);
+
     // Add start button
     const startButton = document.createElement("button");
     startButton.className = "start-button";
     startButton.textContent = "Start";
-    page.appendChild(startButton);
+    buttons.appendChild(startButton);
+
+    page.appendChild(buttons);
 
     return page;
 };
