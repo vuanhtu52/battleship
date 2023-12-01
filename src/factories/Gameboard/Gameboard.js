@@ -1,3 +1,4 @@
+import getRandomInteger from "../../utils/getRandomInteger/getRandomInteger";
 import Ship from "../Ship/Ship";
 
 const Gameboard = length => {
@@ -522,6 +523,99 @@ const Gameboard = length => {
         _attackedPoints = [];
     };
 
+    const placeShipRandom = shipLength => {
+        // Check if shipLength is integer
+        if (Number.isInteger(shipLength) === false) {
+            throw new Error("placeShipRandom: shipLength must be integer");
+        }
+
+        // Check if shipLength is positive
+        if (shipLength <= 0) {
+            throw new Error("placeShipRandom: shipLength must be positive");
+        }
+
+        // Check if shipLength is within the board's length
+        if (shipLength > _length) {
+            throw new Error("placeShipRandom: shipLength must be less than or equal to board length");
+        }
+
+        const direction = ["horizontal", "vertical"][getRandomInteger(0, 1)];
+        let possiblePoints = [];
+        // Loop over all points on the board
+        for (let x = 0; x < _length; x++) {
+            outerLoop: for (let y = 0; y < _length; y++) {
+                // Get all the ship points
+                let shipPoints = [];
+                for (let i = 0; i < shipLength; i++) {
+                    if (direction === "horizontal") {
+                        shipPoints.push([x + i, y]);
+                    } else {
+                        shipPoints.push([x, y + i]);
+                    }
+                }
+
+                // Check if the end point is outside the board
+                if (shipPoints[shipPoints.length - 1][0] < 0 
+                    || shipPoints[shipPoints.length - 1][0] >= _length
+                    || shipPoints[shipPoints.length - 1][1] < 0
+                    || shipPoints[shipPoints.length - 1][1] >= _length) {
+                        continue;
+                }
+
+                // Check if the ship overlaps with another
+                for (let point of shipPoints) {
+                    if (_isOccupiedByShip(point[0], point[1]) === true) {
+                        continue outerLoop;
+                    }
+                }
+
+                // Check if the ship is adjacent to another
+                for (let point of shipPoints) {
+                    if (_isAdjacentToShip(point[0], point[1]) === true) {
+                        continue outerLoop;
+                    }
+                }
+
+                possiblePoints.push([x, y]);
+            }
+        }
+
+        if (possiblePoints.length === 0) {
+            throw new Error("Cannot place ship");
+        }
+
+        const randomStartPoint = possiblePoints[getRandomInteger(0, possiblePoints.length - 1)];
+        placeShip(randomStartPoint[0], randomStartPoint[1], shipLength, direction);
+    };
+
+    const _isOccupiedByShip = (x, y) => {
+        for (let ship of _ships) {
+            for (let point of ship.getPoints()) {
+                if (point[0] === x && point[1] === y) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    const _isAdjacentToShip = (x, y) => {
+        let adjacentPoints = [];
+
+        for (let ship of _ships) {
+            adjacentPoints = adjacentPoints.concat(getPointsAroundShip(ship.getPoints()[0][0], ship.getPoints()[0][1]));
+        }
+
+        for (let point of adjacentPoints) {
+            if (point[0] === x && point[1] === y) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     return {
         getLength,
         placeShip,
@@ -536,6 +630,7 @@ const Gameboard = length => {
         getShipByCoordinates,
         rotateShip,
         reset,
+        placeShipRandom,
     };
 };
 

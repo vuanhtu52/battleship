@@ -419,3 +419,44 @@ test("Test rotateShip function: New points must not be adjacent to another ship"
     expect(() => board.rotateShip(0, 2)).not.toThrow("rotateShip: Ship is adjacent to others");
     expect(() => board.rotateShip(2, 2)).not.toThrow("rotateShip: Ship is adjacent to others");
 });
+
+test("Test placeShipRandom function: shipLength must be integer", () => {
+    const board = Gameboard(10);
+    
+    expect(() => board.placeShipRandom("5")).toThrow("placeShipRandom: shipLength must be integer");
+    expect(() => board.placeShipRandom(5.6)).toThrow("placeShipRandom: shipLength must be integer");
+    expect(() => board.placeShipRandom(5)).not.toThrow("placeShipRandom: shipLength must be integer");
+});
+
+test("Test placeShipRandom function: shipLength must be within the board's length", () => {
+    const board = Gameboard(10);
+
+    expect(() => board.placeShipRandom(0)).toThrow("placeShipRandom: shipLength must be positive");
+    expect(() => board.placeShipRandom(-1)).toThrow("placeShipRandom: shipLength must be positive");
+    expect(() => board.placeShipRandom(1)).not.toThrow("placeShipRandom: shipLength must be positive");
+
+    expect(() => board.placeShipRandom(11)).toThrow("placeShipRandom: shipLength must be less than or equal to board length");
+    expect(() => board.placeShipRandom(12)).toThrow("placeShipRandom: shipLength must be less than or equal to board length");
+    expect(() => board.placeShipRandom(10)).not.toThrow("placeShipRandom: shipLength must be less than or equal to board length");
+});
+
+test("Test placeShipRandom function: The ship must be within the board", () => {
+    const board = Gameboard(10);
+    board.placeShipRandom(5);
+
+    expect(board.getShips().length).toBe(1);
+    const shipPoints = board.getShips()[0].getPoints();
+    shipPoints.forEach(point => {
+        expect(point[0]).toBeGreaterThanOrEqual(0);
+        expect(point[0]).toBeLessThan(board.getLength());
+        expect(point[1]).toBeGreaterThanOrEqual(0);
+        expect(point[1]).toBeLessThan(board.getLength());
+    });
+});
+
+test("Test placeShipRandom function: The ship must not overlap or be adjacent with others", () => {
+    const board = Gameboard(10);
+    board.placeShip(0, 0, 2, "horizontal");
+
+    expect(() => board.placeShipRandom(3)).not.toThrow();
+});

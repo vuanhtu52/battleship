@@ -317,6 +317,20 @@ const ScreenController = () => {
             startButton.disabled = true;
             startButton.pointerEvents = "none";
         });
+
+        // Arrange the ships on enemy's board and go to main page when user clicks start
+        const startButton = document.querySelector(".place-ship-page .start-button");
+        startButton.addEventListener("click", () => {
+            // Place random ships on enemy's board
+            gameController.getGameboard2().placeShipRandom(5);
+            gameController.getGameboard2().placeShipRandom(4);
+            gameController.getGameboard2().placeShipRandom(3);
+            gameController.getGameboard2().placeShipRandom(3);
+            gameController.getGameboard2().placeShipRandom(2);
+
+            // Load main page
+            _loadPage(pageWrapper, "main");
+        });
     };
 
     return {
