@@ -220,6 +220,13 @@ const ScreenController = () => {
                     resetButton.disabled = false;
                     resetButton.style.pointerEvents = "auto";
                 }
+
+                // Enable start button if all 5 ships are on the board
+                const startButton = document.querySelector(".place-ship-page .start-button");
+                if (gameController.getGameboard1().getShips().length === 5) {
+                    startButton.disabled = false;
+                    startButton.style.pointerEvents = "auto";
+                }
             });
 
             cell.addEventListener("dragenter", () => {
@@ -305,6 +312,10 @@ const ScreenController = () => {
             // Disable reset button
             resetButton.disabled = true;
             resetButton.style.pointerEvents = "none";
+            // Disable start button
+            const startButton = document.querySelector(".place-ship-page .start-button");
+            startButton.disabled = true;
+            startButton.pointerEvents = "none";
         });
     };
 
