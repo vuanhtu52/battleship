@@ -73,6 +73,13 @@ const ScreenController = () => {
                 }
             });
         });
+
+        // Reset the game when user clicks new game button
+        const newGameButton = document.querySelector(".main-page .new-game-button");
+        newGameButton.addEventListener("click", () => {
+            gameController.startNewGame();
+            _loadPage(pageWrapper, "placeShip");
+        });
     };
 
     const _disableBoard = board => {
