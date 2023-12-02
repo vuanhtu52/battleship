@@ -2,7 +2,7 @@ import "./mainPage.css";
 import createBoard from "../board/board";
 import createShip from "../ship/ship";
 
-const createMainPage = () => {
+const createMainPage = (gameController) => {
     // Add page
     const page = document.createElement("div");
     page.className = "main-page";
@@ -16,14 +16,31 @@ const createMainPage = () => {
     page.appendChild(player1Section);
     gameSection.appendChild(player1Section);
 
+    // Link the ship elements with the ships in the gameboard
+    const shipElements1 = gameSection.querySelectorAll(".player-section:first-child .ship-yard .ship");
+    shipElements1[0].shipId = "carrier";
+    shipElements1[1].shipId = "battleship";
+    shipElements1[2].shipId = "cruiser";
+    shipElements1[3].shipId = "submarine";
+    shipElements1[4].shipId = "destroyer";
+    
     // Add player 2's section
     const player2Section = createPlayerSection("Player 2", "#EEEFF0", "#A19DB0");
     page.appendChild(player2Section);
     gameSection.appendChild(player2Section);
 
+    // Link the ship elements with the ships in the gameboard
+    const shipElements2 = gameSection.querySelectorAll(".player-section:nth-child(2) .ship-yard .ship");
+    shipElements2[0].shipId = "carrier";
+    shipElements2[1].shipId = "battleship";
+    shipElements2[2].shipId = "cruiser";
+    shipElements2[3].shipId = "submarine";
+    shipElements2[4].shipId = "destroyer";
+
     page.appendChild(gameSection);
 
-    // Add winner message
+
+    // Add winner messages
     const messageDiv = document.createElement("div");
     messageDiv.className = "message";
     page.appendChild(messageDiv);

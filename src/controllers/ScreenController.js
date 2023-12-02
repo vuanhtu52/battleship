@@ -43,7 +43,7 @@ const ScreenController = () => {
     };
 
     const _loadMainPage = pageWrapper => {
-        pageWrapper.appendChild(createMainPage());
+        pageWrapper.appendChild(createMainPage(gameController));
 
         // Render the game boards
         _renderBoard(document.querySelector(".main-page .player-section:first-child .board"), gameController.getGameboard1(), "#38BDF8", false);
@@ -59,8 +59,17 @@ const ScreenController = () => {
                 gameController.getPlayer1().attack(cell.x, cell.y, gameController.getGameboard2());
                 _updateCell(cell, gameController.getGameboard2(), true, "#A19DB0");
                 _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard2(), gameController.getPlayer1(), document.querySelector(".main-page .player-section:nth-child(2) .board"));
+                // Check if there is a winner
                 if (gameController.findWinner() !== "none") {
                     _endGame();
+                }
+                // Check if the ship is sunk and blur its display
+                const attackedShipPlayer2 = gameController.getGameboard2().getShipByCoordinates(cell.x, cell.y);
+                if (attackedShipPlayer2 !== null) {
+                    if (attackedShipPlayer2.isSunk() === true) {
+                        const shipElement = Array.from(document.querySelectorAll(".main-page .player-section:nth-child(2) .ship-yard .ship")).filter(shipElement => shipElement.shipId === attackedShipPlayer2.getId())[0];
+                        shipElement.style.opacity = "0.2";
+                    }
                 }
 
                 // Computer's turn to attack
@@ -68,8 +77,17 @@ const ScreenController = () => {
                 const cellIndex = coordinatesToIndex(attackPoint[0], attackPoint[1], gameController.getGameboard1().getLength());
                 _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex + 1})`), gameController.getGameboard1(), false, "#38BDF8");
                 _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard1(), gameController.getPlayer2(), document.querySelector(".main-page .player-section:first-child .board"));
+                // Check if there is a winner
                 if (gameController.findWinner() !== "none") {
                     _endGame();
+                }
+                // Check if the ship is sunk and blur its display
+                let attackedShipPlayer1 = gameController.getGameboard1().getShipByCoordinates(attackPoint[0], attackPoint[1]);
+                if (attackedShipPlayer1 !== null) {
+                    if (attackedShipPlayer1.isSunk() === true) {
+                        const shipElement = Array.from(document.querySelectorAll(".main-page .player-section:first-child .ship-yard .ship")).filter(shipElement => shipElement.shipId === attackedShipPlayer1.getId())[0];
+                        shipElement.style.opacity = "0.2";
+                    }
                 }
             });
         });
@@ -207,6 +225,22 @@ const ScreenController = () => {
                     const startPoint = [cellCoordinates[0] - _shipCellIndex, cellCoordinates[1]];
                     // Add the ship to gameboard
                     gameController.getGameboard1().placeShip(startPoint[0], startPoint[1], _shipLength, "horizontal");
+                    // Set id for the ship
+                    const ship = gameController.getGameboard1().getShips()[gameController.getGameboard1().getShips().length - 1];
+                    if (ship.getLength() === 5) {
+                        ship.setId("carrier");
+                    } else if (ship.getLength() === 4) {
+                        ship.setId("battleship");
+                    } else if (ship.getLength() === 3) {
+                        const existingIds = gameController.getGameboard1().getShips().map(ship => ship.getId());
+                        if (existingIds.includes("cruiser") === false) {
+                            ship.setId("cruiser");
+                        } else {
+                            ship.setId("submarine");
+                        }
+                    } else if (ship.getLength() === 2) {
+                        ship.setId("destroyer");
+                    }
                     // Change colors of the cells occupied by the ship
                     const shipPoints = gameController.getGameboard1().getShipByCoordinates(startPoint[0], startPoint[1]).getPoints();
                     shipPoints.forEach(shipPoint => {
@@ -334,6 +368,26 @@ const ScreenController = () => {
             gameController.getGameboard2().placeShipRandom(3);
             gameController.getGameboard2().placeShipRandom(3);
             gameController.getGameboard2().placeShipRandom(2);
+
+            // Set id for the ships
+            // const ship = gameController.getGameboard2().getShips()[gameController.getGameboard2().getShips() - 1];
+            const ships = gameController.getGameboard2().getShips();
+            for (let ship of ships) {
+                if (ship.getLength() === 5) {
+                    ship.setId("carrier");
+                } else if (ship.getLength() === 4) {
+                    ship.setId("battleship");
+                } else if (ship.getLength() === 3) {
+                    const existingIds = gameController.getGameboard1().getShips().map(ship => ship.getId());
+                    if (existingIds.includes("cruiser") === false) {
+                        ship.setId("cruiser");
+                    } else {
+                        ship.setId("submarine");
+                    }
+                } else if (ship.getLength() === 2) {
+                    ship.setId("destroyer");
+                }
+            }
 
             // Load main page
             _loadPage(pageWrapper, "main");

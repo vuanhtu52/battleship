@@ -1,7 +1,8 @@
 const Ship = length => {
     let _length = length;
     let _hitCount = 0;
-    let _position = []; // Contains start and end points on the board
+    let _position = []; // Contains start and end points on the boards
+    let _id = "";
 
     const getLength = () => {
         if (Number.isInteger(_length) === false) {
@@ -26,6 +27,10 @@ const Ship = length => {
 
         _length = newLength;
     };
+
+    const getId = () => _id;
+
+    const setId = id => _id = id;
 
     const getHitCount = () => {
         if (Number.isInteger(_hitCount) === false) {
@@ -119,6 +124,8 @@ const Ship = length => {
     return {
         getLength,
         setLength,
+        getId,
+        setId,
         getHitCount,
         hit,
         isSunk,
