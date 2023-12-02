@@ -230,7 +230,7 @@ const Gameboard = length => {
             throw new Error("receiveAttack: Coordinates must be inside board");
         }
 
-        // Check if the spot as already been attacked
+        // Check if the spot has already been attacked
         for (let point of getAttackedPoints()) {
             if (x === point[0] && y === point[1]) {
                 throw new Error("receiveAttack: Cannot attack the same spot twice");

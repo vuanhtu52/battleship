@@ -50,3 +50,13 @@ test("Test setActive function", () => {
     expect(player.getActive()).toBe(false);
 });
 
+test("Test attackSmart function", () => {
+    const player = Player();
+    const enemyBoard = Gameboard(3);
+    enemyBoard.placeShip(0, 0, 3, "vertical");
+
+    player.attack(0, 0, enemyBoard);
+    player.attack(0, 1, enemyBoard);
+    // expect(player.attackSmart(enemyBoard)).toStrictEqual([0, 2]);
+});
+

@@ -73,10 +73,11 @@ const ScreenController = () => {
                 }
 
                 // Computer's turn to attack
-                const attackPoint = gameController.getPlayer2().attackRandom(gameController.getGameboard1());
+                // const attackPoint = gameController.getPlayer2().attackRandom(gameController.getGameboard1());
+                const attackPoint = gameController.getPlayer2().attackSmart(gameController.getGameboard1());
                 const cellIndex = coordinatesToIndex(attackPoint[0], attackPoint[1], gameController.getGameboard1().getLength());
                 _updateCell(document.querySelector(`.main-page .player-section:first-child .cell:nth-child(${cellIndex + 1})`), gameController.getGameboard1(), false, "#38BDF8");
-                _updateAdjacentCells(cell.x, cell.y, gameController.getGameboard1(), gameController.getPlayer2(), document.querySelector(".main-page .player-section:first-child .board"));
+                _updateAdjacentCells(attackPoint[0], attackPoint[1], gameController.getGameboard1(), gameController.getPlayer2(), document.querySelector(".main-page .player-section:first-child .board"));
                 // Check if there is a winner
                 if (gameController.findWinner() !== "none") {
                     _endGame();
